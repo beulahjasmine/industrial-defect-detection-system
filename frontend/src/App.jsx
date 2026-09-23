@@ -92,70 +92,69 @@ function App() {
   // RUN DETECTION
   // ============================
 
-  const runDetection = () => {
-    if (!selectedFile) {
-      alert("Please upload an inspection image first.");
-      return;
-    }
+ const runDetection = () => {
+  if (!selectedFile) {
+    alert("Please upload an inspection image first.");
+    return;
+  }
 
-    setIsDetecting(true);
-    setResult(null);
+  setIsDetecting(true);
+  setResult(null);
 
-    // Simulated AI processing
-    setTimeout(() => {
-      const defectDetected = Math.random() > 0.35;
+  setTimeout(() => {
 
-      const confidence = defectDetected
-        ? (88 + Math.random() * 10).toFixed(1)
-        : (95 + Math.random() * 4).toFixed(1);
+    // TEMPORARY FRONTEND SIMULATION
+    // This is NOT actual YOLOv8 inference.
+    const defectDetected = Math.random() > 0.5;
 
-      const latency = Math.floor(35 + Math.random() * 20);
+    const defectTypes = [
+      "Surface Crack",
+      "Scratch",
+      "Surface Dent"
+    ];
 
-      const defectTypes = [
-        "Surface Crack",
-        "Scratch",
-        "Surface Dent",
+    const randomDefect =
+      defectTypes[
+        Math.floor(Math.random() * defectTypes.length)
       ];
 
-      const randomDefect =
-        defectTypes[
-          Math.floor(Math.random() * defectTypes.length)
-        ];
+    const detectionResult = {
+      id: Date.now(),
 
-      const detectionResult = {
-        id: Date.now(),
+      defect: defectDetected
+        ? randomDefect
+        : "No Defect",
 
-        defect: defectDetected
-          ? randomDefect
-          : "No Defect",
+      confidence: defectDetected
+        ? Number((88 + Math.random() * 10).toFixed(1))
+        : Number((95 + Math.random() * 4).toFixed(1)),
 
-        confidence: Number(confidence),
+      latency: Math.floor(35 + Math.random() * 20),
 
-        latency,
+      status: defectDetected
+        ? "Defect Detected"
+        : "Defect-Free",
 
-        status: defectDetected
-          ? "Defect Detected"
-          : "Defect-Free",
+      image: preview,
 
-        image: preview,
+      fileName: selectedFile.name,
 
-        fileName: selectedFile.name,
+      time: new Date().toLocaleTimeString(),
 
-        time: new Date().toLocaleTimeString(),
+      date: new Date().toLocaleDateString(),
+    };
 
-        date: new Date().toLocaleDateString(),
-      };
+    setResult(detectionResult);
 
-      setResult(detectionResult);
+    setHistory((previous) => [
+      detectionResult,
+      ...previous,
+    ]);
 
-      setHistory((previous) => [
-        detectionResult,
-        ...previous,
-      ]);
+    setIsDetecting(false);
 
-      setIsDetecting(false);
-    }, 1500);
-  };
+  }, 1500);
+};
 
   // ============================
   // RESET INSPECTION
